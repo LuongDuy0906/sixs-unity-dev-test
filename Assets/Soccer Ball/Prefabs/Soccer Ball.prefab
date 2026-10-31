@@ -106,8 +106,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.12541859
-  m_Center: {x: 0.0024422258, y: 0.0034869462, z: 0}
+  m_Radius: 0.17469129
+  m_Center: {x: -0.0023322403, y: 0.0034869462, z: 0}
 --- !u!114 &-5283671224113510020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,7 +120,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eefdf440c304fec429eedbcf912ef7ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 20
+  confetti: {fileID: 6661073620808731575, guid: 7d05e4127f42c914aa5d5902442e058e, type: 3}
+  flightTime: 1.5
 --- !u!54 &-3443929676677494395
 Rigidbody:
   m_ObjectHideFlags: 0

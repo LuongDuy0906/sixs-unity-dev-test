@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public static Action<bool> KickAvailabilityChanged;
+    public static event Action<bool> KickAvailabilityChanged;
 
     [SerializeField] private float moveSpeed;
     [SerializeField] private GameManager gameManager;
@@ -48,18 +48,18 @@ public class Player : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if(collision.gameObject.CompareTag("Ball"))
+        if(other.gameObject.CompareTag("Ball"))
         {
-            currentBall = collision.gameObject.GetComponent<Ball>();
+            currentBall = other.gameObject.GetComponent<Ball>();
             KickAvailabilityChanged?.Invoke(CanKick);
         }
     }
 
-    void OnCollisionExit(Collision collision)
+    void OnTriggerExit(Collider other)
     {
-        if(collision.gameObject.CompareTag("Ball"))
+        if(other.gameObject.CompareTag("Ball"))
         {
             currentBall = null;
             KickAvailabilityChanged?.Invoke(CanKick);
