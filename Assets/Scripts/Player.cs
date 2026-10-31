@@ -8,10 +8,11 @@ public class Player : MonoBehaviour
     public static Action<bool> KickAvailabilityChanged;
 
     [SerializeField] private float moveSpeed;
+    [SerializeField] private GameManager gameManager;
 
     private Rigidbody rb;
     private Animator animator;
-    private GameObject currentBall;
+    private Ball currentBall;
     public bool CanKick => currentBall != null;
     // Start is called before the first frame update
     void Start()
@@ -51,8 +52,24 @@ public class Player : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Ball"))
         {
-            currentBall = collision.gameObject;
+            currentBall = collision.gameObject.GetComponent<Ball>();
             KickAvailabilityChanged?.Invoke(CanKick);
         }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Ball"))
+        {
+            currentBall = null;
+            KickAvailabilityChanged?.Invoke(CanKick);
+        }
+    }
+
+    public void KickBall()
+    {
+        gameManager.Kick(currentBall);
+        currentBall = null;
+        KickAvailabilityChanged?.Invoke(CanKick);
     }
 }
