@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public event Action BallReachedGoal;
+    public event Action<Ball> BallReachedGoal;
 
     private Rigidbody rb;
     private ParticleSystem confettiEffect;
@@ -19,17 +19,11 @@ public class Ball : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void Toward(Vector3 goalPosition)
     {
-        Vector3 displacement = goalPosition - rb.position;
-        rb.velocity = displacement / flightTime
-                - 0.5f * Physics.gravity * flightTime;
+        Vector3 direction = goalPosition - rb.position;
+        direction.y = 0f;
+        rb.velocity = direction.normalized * speed;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -44,7 +38,7 @@ public class Ball : MonoBehaviour
             confettiEffect.Play();
             Destroy(confettiEffect.gameObject, 5f);
 
-            BallReachedGoal?.Invoke();
+            BallReachedGoal?.Invoke(gameObject.GetComponent<Ball>());
         }
     }
 }

@@ -15,15 +15,14 @@ public class UIManager : MonoBehaviour
         Player.KickAvailabilityChanged += HandleKickAvailable;
     }
 
+    void OnDisable()
+    {
+        Player.KickAvailabilityChanged -= HandleKickAvailable;
+    }
+
     void Start()
     {
         kickButton.gameObject.SetActive(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void HandleKickAvailable(bool canKick)

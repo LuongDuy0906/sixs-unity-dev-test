@@ -6,6 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public static event Action<bool> KickAvailabilityChanged;
+    private readonly List<Ball> nearbyBalls = new List<Ball>();
 
     [SerializeField] private float moveSpeed;
     [SerializeField] private GameManager gameManager;
@@ -22,7 +23,7 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         PlayerMovement();
     }
@@ -48,28 +49,39 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void RefreshCurrentBall()
+    {
+        currentBall = nearbyBalls.Count > 0
+            ? nearbyBalls[nearbyBalls.Count - 1]
+            : null;
+
+        KickAvailabilityChanged?.Invoke(CanKick);
+    }
+
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Ball"))
-        {
-            currentBall = other.gameObject.GetComponent<Ball>();
-            KickAvailabilityChanged?.Invoke(CanKick);
-        }
+        if (!other.TryGetComponent(out Ball ball) || nearbyBalls.Contains(ball))
+            return;
+
+        nearbyBalls.Add(ball);
+        RefreshCurrentBall();
     }
 
     void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.CompareTag("Ball"))
-        {
-            currentBall = null;
-            KickAvailabilityChanged?.Invoke(CanKick);
-        }
+        if (!other.TryGetComponent(out Ball ball))
+        return;
+
+        nearbyBalls.Remove(ball);
+        RefreshCurrentBall();
     }
 
     public void KickBall()
     {
-        gameManager.Kick(currentBall);
-        currentBall = null;
-        KickAvailabilityChanged?.Invoke(CanKick);
+        if (currentBall == null || !gameManager.Kick(currentBall))
+            return;
+
+        nearbyBalls.Remove(currentBall);
+        RefreshCurrentBall();
     }
 }
